@@ -8,9 +8,6 @@ const axios = require('axios');
 const inquirer = require('inquirer');
 require('dotenv').config();
 
-// Register the inquirer-file-path plugin
-inquirer.registerPrompt('filePath', require('inquirer-file-path'));
-
 // Directory and log file paths
 const NUTRITION_DIR = path.join(__dirname, 'nutrition');
 const LOG_FILE = path.join(NUTRITION_DIR, 'nutrition-log.json');
@@ -71,22 +68,13 @@ async function writeLogFile(entries) {
   }
 }
 
-// Function to select an image using inquirer-file-path
+// Function to select an image (manual input)
 async function selectImage() {
   try {
-    const { filePath } = await inquirer.prompt([
-      {
-        type: 'filePath',
-        name: 'filePath',
-        message: 'Select an image file:',
-        basePath: '/users/evanthayer', // Start in the user's home directory
-        filter: (file) => file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png'), // Filter for image files
-      },
-    ]);
-    return filePath;
+    return await prompt('Enter the path to the image of your meal: ');
   } catch (err) {
     console.error('Error selecting image:', err.message);
-    return prompt('Enter the path to the image manually: ');
+    process.exit(1);
   }
 }
 
